@@ -4,6 +4,7 @@ namespace App;
 use App\Monolog\FormatHelper;
 use App\Monolog\LoggerFactory;
 use Bitrix\Main\Diag\Debug;
+use Monolog\Level;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -60,7 +61,7 @@ class Log implements LoggerInterface {
      */
     public function error($message, $context = []): void
     {
-        if ($this->isDebugEnabled(Logger::ERROR)) {
+        if ($this->isDebugEnabled(Level::Error)) {
             try {
                 $logger = LoggerFactory::getInstance($this->channel, $context);
                 $message = FormatHelper::stringfyMessage($message);
@@ -77,7 +78,7 @@ class Log implements LoggerInterface {
      */
     public function warning($message, $context = []): void
     {
-        if ($this->isDebugEnabled(Logger::WARNING)) {
+        if ($this->isDebugEnabled(Level::Warning)) {
             try {
                 $logger = LoggerFactory::getInstance($this->channel, $context);
                 $message = FormatHelper::stringfyMessage($message);
@@ -94,7 +95,7 @@ class Log implements LoggerInterface {
      */
     public function notice($message, $context = []): void
     {
-        if ($this->isDebugEnabled(Logger::NOTICE)) {
+        if ($this->isDebugEnabled(Level::Notice)) {
             try {
                 $logger = LoggerFactory::getInstance($this->channel, $context);
                 $message = FormatHelper::stringfyMessage($message);
@@ -111,7 +112,7 @@ class Log implements LoggerInterface {
      */
     public function info($message, $context = []): void
     {
-        if ($this->isDebugEnabled(Logger::INFO)) {
+        if ($this->isDebugEnabled(Level::Info)) {
             try {
                 $logger = LoggerFactory::getInstance($this->channel, $context);
                 $message = FormatHelper::stringfyMessage($message);
@@ -128,7 +129,7 @@ class Log implements LoggerInterface {
      */
     public function debug($message, $context = []): void
     {
-        if ($this->isDebugEnabled(Logger::DEBUG)) {
+        if ($this->isDebugEnabled(Level::Debug)) {
             try {
                 $logger = LoggerFactory::getInstance($this->channel, $context);
                 $message = FormatHelper::stringfyMessage($message);
@@ -208,10 +209,10 @@ class Log implements LoggerInterface {
 
         $level = Logger::toMonologLevel($level);
 
-        $minDebugLevel = ($_ENV['APP_DEBUG_LEVEL'] ?: LogLevel::DEBUG);
+        $minDebugLevel = ($_ENV['APP_DEBUG_LEVEL'] ?: Level::Debug);
         $minDebugLevel = Logger::toMonologLevel($minDebugLevel);
 
-        if($level >= $minDebugLevel) {
+        if($level->value >= $minDebugLevel->value) {
             return true;
         }
         return false;
